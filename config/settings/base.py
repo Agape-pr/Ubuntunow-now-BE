@@ -1,16 +1,29 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+ROOT_DIR = Path(__file__).resolve().parents[2]  # project root
+load_dotenv(ROOT_DIR / ".env")
+
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+def env_bool(name: str, default: bool = False) -> bool:
+    val = os.environ.get(name)
+    if val is None:
+        return default
+    return val.strip().lower() in {"1", "true", "yes", "y", "on"}
+
 # Quick-start development settings - unsuitable for production
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-default-key')
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-default-key")
 
-DEBUG = True
+DEBUG = env_bool("DJANGO_DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()
+]
 
 # Application definition
 
@@ -36,6 +49,8 @@ INSTALLED_APPS = [
     'apps.payments',
     'apps.disputes',
     'apps.notifications',
+    "apps.authentication.apps.AuthenticationConfig",
+
 ]
 
 MIDDLEWARE = [
@@ -154,3 +169,30 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+# CORS (explicit by default; configure via env)
+# - For local dev you can set CORS_ALLOW_ALL_ORIGINS=true
+# - Or set CORS_ALLOWED_ORIGINS as a comma-separated list
+CORS_ALLOW_ALL_ORIGINS = env_bool("CORS_ALLOW_ALL_ORIGINS", default=False)
+CORS_ALLOWED_ORIGINS = [
+    o.strip() for o in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",") if o.strip()
+]
+
+LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO").upper()
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {"format": "%(asctime)s %(levelname)s %(name)s %(message)s"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "standard"},
+    },
+    "root": {"handlers": ["console"], "level": LOG_LEVEL},
+}
+
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL")
+SENDGRID_FROM_NAME = os.getenv("SENDGRID_FROM_NAME")
+SENDGRID_TEMPLATE_OTP_ID = os.getenv("SENDGRID_TEMPLATE_OTP_ID")
