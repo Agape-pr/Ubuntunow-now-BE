@@ -44,8 +44,12 @@ class SendEmailOTPView(GenericAPIView):
 
         create_email_otp(email=email, purpose=purpose)
 
+        # Return response matching frontend SendOTPResponse interface
         return Response(
-            {"detail": "OTP sent successfully"},
+            {
+                "email": email,
+                "purpose": purpose,
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -73,8 +77,12 @@ class ResendEmailOTPView(GenericAPIView):
 
         resend_email_otp(email=email, purpose=purpose)
 
+        # Return response matching frontend ResendOTPResponse interface
         return Response(
-            {"detail": "OTP resent successfully"},
+            {
+                "email": email,
+                "purpose": purpose,
+            },
             status=status.HTTP_200_OK,
         )
 
