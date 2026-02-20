@@ -196,3 +196,9 @@ SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL")
 SENDGRID_FROM_NAME = os.getenv("SENDGRID_FROM_NAME")
 SENDGRID_TEMPLATE_OTP_ID = os.getenv("SENDGRID_TEMPLATE_OTP_ID")
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",                    # local frontend
+    "https://ubuntu-nexus-front.vercel.app",    # production frontend (see below)
+]
