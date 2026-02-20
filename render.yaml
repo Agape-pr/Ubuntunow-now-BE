@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: ubuntunow-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: bash -lc "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ""
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: CORS_ALLOW_ALL_ORIGINS
+        value: "false"
+      - key: DB_SSL_REQUIRE
+        value: "true"
+
