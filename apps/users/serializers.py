@@ -9,9 +9,21 @@ class StoreSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    store_description = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True
+    )
+    
     class Meta:
         model = Store
         fields = ['store_name', 'store_description', 'store_logo']
+    
+    def to_internal_value(self, data):
+        # Normalize empty strings to None for optional fields
+        if 'store_description' in data and data['store_description'] == '':
+            data['store_description'] = None
+        return super().to_internal_value(data)
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     account_type = serializers.ChoiceField(
@@ -26,11 +38,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         account_type = attrs.get('account_type')
         store_data = attrs.get('store')
 
-        # Seller must provide store data
-        if account_type == 'seller' and not store_data:
-            raise serializers.ValidationError({
-                "store": "Store data is required for sellers."
-            })
+        # Seller must provide store data with store_name
+        if account_type == 'seller':
+            if not store_data:
+                raise serializers.ValidationError({
+                    "store": "Store data is required for sellers."
+                })
+            if not store_data.get('store_name') or not store_data.get('store_name', '').strip():
+                raise serializers.ValidationError({
+                    "store": {"store_name": "Store name is required for sellers."}
+                })
+            # Normalize empty string to None for optional fields
+            if store_data.get('store_description') == '':
+                store_data['store_description'] = None
 
         # Buyer must NOT provide store data
         if account_type == 'buyer' and store_data:
