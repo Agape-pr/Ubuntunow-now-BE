@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     # Local Apps
     'apps.users',
     'apps.products',
-    'apps.orders',
-    'apps.payments',
-    'apps.disputes',
-    'apps.notifications',
+    # 'apps.orders',
+    # 'apps.payments',
+    # 'apps.disputes',
+    # 'apps.notifications',
     "apps.authentication.apps.AuthenticationConfig",
 
 ]
