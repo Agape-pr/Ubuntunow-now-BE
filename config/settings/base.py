@@ -199,6 +199,7 @@ SENDGRID_TEMPLATE_OTP_ID = os.getenv("SENDGRID_TEMPLATE_OTP_ID")
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",                    # local frontend
-    "https://ubuntu-nexus-front.vercel.app",    # production frontend (see below)
+    "http://localhost:8080",
+    "https://ubuntu-nexus-front.vercel.app",
+    "https://www.ubuntunow.rw",
 ]
