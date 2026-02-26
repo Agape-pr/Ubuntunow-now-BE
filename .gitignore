@@ -1,2 +1,9 @@
 #virtual environment 
 venv/
+.env
+
+# Local development artifacts
+db.sqlite3
+media/
+staticfiles/
+.DS_Store
