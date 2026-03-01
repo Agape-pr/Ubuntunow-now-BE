@@ -55,13 +55,9 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-
-# Tell WhiteNoise to ignore missing files during manifest generation
-# (This fixes the 'MissingFileError' for DRF fonts on collectstatic)
-WHITENOISE_MANIFEST_STRICT = False
 
 # Enable WhiteNoise in production only.
 if "whitenoise.middleware.WhiteNoiseMiddleware" not in MIDDLEWARE:
