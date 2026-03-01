@@ -1,8 +1,9 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserRegistrationSerializer
+from .serializers import UserRegistrationSerializer, UserDetailSerializer, CustomTokenObtainPairSerializer
 from apps.authentication.services.otp_service import create_email_otp
 
 
@@ -65,4 +66,14 @@ class RegisterView(generics.CreateAPIView):
                 data["store"]["store_logo"] = store.store_logo.url if hasattr(store.store_logo, 'url') else str(store.store_logo)
 
         return Response(data, status=status.HTTP_201_CREATED)
+
+class CurrentUserView(generics.RetrieveAPIView):
+    serializer_class = UserDetailSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 

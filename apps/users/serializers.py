@@ -17,7 +17,7 @@ class StoreSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Store
-        fields = ['store_name', 'store_description', 'store_logo']
+        fields = ['store_name', 'slug', 'store_description', 'store_logo']
     
     def to_internal_value(self, data):
         # Normalize empty strings to None for optional fields
@@ -95,3 +95,15 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'role', 'phone_number', 'store']
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        # Add user info to the response
+        user_serializer = UserDetailSerializer(self.user)
+        data['user'] = user_serializer.data
+        
+        return data
