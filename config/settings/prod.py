@@ -49,10 +49,14 @@ CORS_ALLOW_ALL_ORIGINS = False
 if render_hostname:
     CSRF_TRUSTED_ORIGINS = [f"https://{render_hostname}"]
 
-# WhiteNoise static file storage (Render-friendly)
+# WhiteNoise static file storage (Render-friendly) and Cloudinary for Media
 STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
 }
 
 # Enable WhiteNoise in production only.
