@@ -107,3 +107,17 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['user'] = user_serializer.data
         
         return data
+
+class PublicStoreSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+    store_logo = serializers.ImageField(read_only=True)
+
+    class Meta:
+        model = Store
+        fields = ['store_name', 'slug', 'store_description', 'store_logo', 'created_at', 'products']
+
+    def get_products(self, obj):
+        from apps.products.serializers import ProductSerializer
+        # Only surface active products on the public store page
+        active_products = obj.products.filter(is_active=True)
+        return ProductSerializer(active_products, many=True).data

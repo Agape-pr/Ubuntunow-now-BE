@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserRegistrationSerializer, UserDetailSerializer, CustomTokenObtainPairSerializer
+from .serializers import UserRegistrationSerializer, UserDetailSerializer, CustomTokenObtainPairSerializer, PublicStoreSerializer
+from .models import Store
 from apps.authentication.services.otp_service import create_email_otp
 
 
@@ -76,4 +77,10 @@ class CurrentUserView(generics.RetrieveAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class PublicStoreView(generics.RetrieveAPIView):
+    queryset = Store.objects.all()
+    serializer_class = PublicStoreSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'slug'
 
